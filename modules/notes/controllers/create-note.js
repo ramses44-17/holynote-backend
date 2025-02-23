@@ -4,13 +4,6 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 // Regex pour valider les URLs YouTube et extraire l'ID
 const youtubeUrlRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-
-// Regex pour s'assurer que la date est bien au format "YYYY-MM-DD"
-const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-const isValidDate = (dateString) => {
-  const date = new Date(dateString);
-  return !isNaN(date.getTime()) && dateString === date.toISOString().split("T")[0];
-};
 const noteSchema = z.object({
   topic: z.string({
     message:"topic is required"
@@ -26,9 +19,10 @@ const noteSchema = z.object({
   }).min(1, "preacher is required").max(60, "Le nom du prédicateur ne doit pas dépasser 60 caractères"),
   date: z.string({
     message:"date is required"
-  }).regex(dateRegex, "invalid date, format must be YYYY-MM-DD"),
-}).refine(data => isValidDate(data.date)
-, "invalid date format");
+  }).date({
+    message:"invalid date format,please provide date in YYYY-MM-DD"
+  })
+})
 
 const extractYouTubeId = (url) => {
   const match = url.match(youtubeUrlRegex);

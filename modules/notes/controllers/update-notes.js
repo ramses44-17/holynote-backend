@@ -7,12 +7,6 @@ const prisma = new PrismaClient()
 
 const youtubeUrlRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
 
-// Regex pour s'assurer que la date est bien au format "YYYY-MM-DD"
-const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-const isValidDate = (dateString) => {
-  const date = new Date(dateString);
-  return (!isNaN(date.getTime()) && dateString === date.toISOString().split("T")[0]) || dateRegex.test(date);
-};
 const noteSchema = z.object({
   noteId:z.string({
     message:"note id is required"
@@ -31,13 +25,10 @@ const noteSchema = z.object({
   preacher: z.string({
     message:"preacher name is required"
   }).min(1, "preacher is required").max(60, "Le nom du prédicateur ne doit pas dépasser 60 caractères").optional(),
-  date: z.string().optional(),
-}).refine((data) => {
-  if (!data.date) {
-    return isValidDate(data.date)
-  }
-}
-, "invalid date format");
+  date: z.string().date({
+    message:"invalid date format,please provide date in YYYY-MM-DD"
+  }).optional(),
+})
 
 const extractYouTubeId = (url) => {
   const match = url.match(youtubeUrlRegex);
@@ -66,7 +57,7 @@ if(!result.success){
   })
 }
 
-const {topic,content,color, references, youtubeUrl,date,preacher} = req.body
+const {topic,content,color, references, youtubeUrl,date,preacher,noteId} = req.body
 
 //trouver la note
 const oldNote = await prisma.note.findUnique({
@@ -99,6 +90,8 @@ if(references){
 
   res.status(200).json(updatedNote)
   } catch (error) {
+    console.log(error);
+    
     res.status(500).json({
       message:"something went wrong"
     })
