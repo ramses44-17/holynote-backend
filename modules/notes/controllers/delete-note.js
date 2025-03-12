@@ -20,7 +20,7 @@ if(!result.success){
 }
 const noteToDelete = await prisma.note.findUnique({
   where:{
-    id:noteId
+    id:noteId,userId:req.user?.id
   }
 })
 
@@ -35,9 +35,10 @@ const deletedNote = await prisma.note.delete({
   },
 })
 res.status(200).json(
-  deleteNote
+  deletedNote
 )
-} catch (e) {
+} catch (error) {
+  console.log(error)
   res.status(500).json({
     message:"something went wrong !"
   })

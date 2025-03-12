@@ -33,6 +33,7 @@ export const verifyToken = async(req, res, next) => {
   }
   next()
   } catch (error) {
+    console.log(error);
     if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({ message: 'Token invalid.' });
     }

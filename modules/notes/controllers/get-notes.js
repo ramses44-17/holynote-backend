@@ -4,7 +4,8 @@ import { PrismaClient} from "@prisma/client";
 const prisma = new PrismaClient()
 
 export const getNotes = async(req,res) => {
-
+try {
+  
   const notes = await prisma.note.findMany({
     where:{
       userId:req.user?.id
@@ -14,6 +15,11 @@ export const getNotes = async(req,res) => {
   res.status(200).json({
     notes
   })
+} catch (error) {
+  res.status(500).json({
+    message:"something went wrong !"
+  })
+}
 }
 
 

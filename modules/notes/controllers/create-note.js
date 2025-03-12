@@ -19,9 +19,9 @@ const noteSchema = z.object({
   }).min(1, "preacher is required").max(60, "Le nom du prédicateur ne doit pas dépasser 60 caractères"),
   date: z.string({
     message:"date is required"
-  }).date({
-    message:"invalid date format,please provide date in YYYY-MM-DD"
-  })
+  }).date(
+    "invalid date format,please provide date in YYYY-MM-DD"
+  )
 })
 
 const extractYouTubeId = (url) => {

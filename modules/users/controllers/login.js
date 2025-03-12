@@ -33,13 +33,14 @@ const login = async(req, res) => {
   })
   
   res.cookie("token", token, {
-    httpOnly: true, // Empêche l'accès au cookie via JavaScript côté client
-    sameSite: "Lax", // Protège contre les attaques CSRF
-    secure: process.env.NODE_ENV === "production", // Cookie uniquement envoyé sur HTTPS en production
+    httpOnly: true, 
+    sameSite: "None", 
+    secure: true, 
     maxAge: 86400000, // Durée de validité du cookie : 1 jour en millisecondes
   });
   res.status(200).json({
     message: "Login successful",
+    token:token,
     user:{
       id: user.id,
       username: user.username,
