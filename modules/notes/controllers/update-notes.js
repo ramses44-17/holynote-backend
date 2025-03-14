@@ -24,9 +24,13 @@ const noteSchema = z.object({
   }).min(1, "topic is required").max(60, "topic must be no longer than 60 characters").optional(),
   content: z.string().optional(), // Peut être une chaîne vide
   color: z.string().max(10).default("red"),
-  references: z.string().regex(/^([a-zA-Z]+\s\d{1,3}(:\d{1,3}(-\d{1,3})?)?,?\s?)+$/,{
-    message:"invalid references format"
-  }).optional(),
+  references: z.string().regex(
+    /^([a-zA-ZÀ-ÿ]+\s\d{1,3}(:\d{1,3}(-\d{1,3})?)?(,\s[a-zA-ZÀ-ÿ]+\s\d{1,3}(:\d{1,3}(-\d{1,3})?)?)*)$/,
+    {
+      message: "Invalid references format",
+    }
+  )
+  .optional(),
   youtubeUrl: z.string().url("invalid youtube url").regex(youtubeUrlRegex, "invalid youtube url").optional().nullable(),
   preacher: z.string({
     message:"preacher name is required"
