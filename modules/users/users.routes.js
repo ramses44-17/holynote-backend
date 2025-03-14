@@ -12,8 +12,12 @@ userRouter.get("/me",verifyToken,(req,res) => {
     user: req.user
   })
 })
-userRouter.post("/logout", (req,res) => {
-  res.clearCookie("token")
+userRouter.post("/logout",verifyToken, (req,res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+  });
   res.json({
     message: "Logged out"
   })

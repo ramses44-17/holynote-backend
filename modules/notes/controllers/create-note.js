@@ -29,6 +29,7 @@ const noteSchema = z.object({
 })
 
 const extractYouTubeId = (url) => {
+  if(!url) return null
   const match = url.match(youtubeUrlRegex);
   return match ? match[1] : null;
 };
@@ -72,9 +73,7 @@ const createdNote = await prisma.note.create({
     preacher:preacher
   }
 })
-  res.status(201).json({
-    note:createdNote
-  })
+  res.status(201).json(createdNote)
 
 } catch (e) {
   console.log(e);

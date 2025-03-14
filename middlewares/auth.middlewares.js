@@ -4,8 +4,7 @@ import jwt from 'jsonwebtoken'
 const prisma = new PrismaClient()
 export const verifyToken = async(req, res, next) => {
   try {
-    const token = req.cookies.token
-    
+    const token = req.cookies.token   
   if(!token) {
     return res.status(401).json({
       message: "Unauthorized"
