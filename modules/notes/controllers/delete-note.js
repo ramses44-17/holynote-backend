@@ -2,17 +2,18 @@ import z from "zod"
 import { PrismaClient } from "@prisma/client"
 
 
+
 const prisma = new PrismaClient()
 const noteSchema = z.object({
   noteId:z.string({
-    message:"note id is required"
+    message:"Note id is required"
   }).uuid({
-    message:"invalid id"
+    message:"Invalid id"
   })})
 export const deleteNote = async(req,res) => {
 try {
-const result = noteSchema.safeParse(req.body)
-const {noteId} = req.body
+const result = noteSchema.safeParse(req.params)
+const {noteId} = req.params
 if(!result.success){
   return res.status(422).json({
     message: result.error?.errors[0].message

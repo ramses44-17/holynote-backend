@@ -10,6 +10,6 @@ const notesRouter = express.Router()
 notesRouter.post("/",verifyToken,addNote)
 notesRouter.get("/",verifyToken,getNotes)
 notesRouter.get("/:noteId",verifyToken,verifyToken,getNote)
-notesRouter.patch('/',verifyToken,updateNote)
-notesRouter.delete("/",verifyToken,deleteNote)
+notesRouter.patch('/:noteId',verifyToken,updateNote)
+notesRouter.delete("/:noteId",verifyToken,deleteNote)
 export default notesRouter

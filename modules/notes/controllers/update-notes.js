@@ -5,14 +5,20 @@ import z from "zod"
 const prisma = new PrismaClient()
 
 
+
+
 const youtubeUrlRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
 
-const noteSchema = z.object({
+
+const noteIdSchema = z.object({
   noteId:z.string({
     message:"note id is required"
   }).uuid({
-    message:"invalid id"
-  }),
+    message:"invalid Id"
+  })
+})
+const noteSchema = z.object({
+  
   topic: z.string({
     message:"topic is required"
   }).min(1, "topic is required").max(60, "topic must be no longer than 60 characters").optional(),
@@ -49,19 +55,27 @@ const separateReferences = (references) => {
 
 const updateNote = async(req,res) => {
   try {
-    const result = noteSchema.safeParse(req.body)
+    const bodyValidation = noteSchema.safeParse(req.body)
+    const paramsValidation = noteIdSchema.safeParse(req.params)
+
+    if(!paramsValidation.success){
+      return res.status(422).json({
+        message: paramsValidation.error?.errors[0].message
+      })
+    }
       
-if(!result.success){
+if(!bodyValidation.success){
   return res.status(422).json({
-    message: result.error?.errors[0].message
+    message: bodyValidation.error?.errors[0].message
   })
 }
 
-const {topic,content,color, references, youtubeUrl,date,preacher,noteId} = req.body
+const {noteId} = req.params
+const {topic,content,color, references, youtubeUrl,date,preacher} = req.body
 
 //trouver la note
 const oldNote = await prisma.note.findUnique({
-  where:{id:noteId}
+  where:{id:noteId,userId:req.user?.id}
 })
 if(!oldNote){
   return res.status(404).json({
