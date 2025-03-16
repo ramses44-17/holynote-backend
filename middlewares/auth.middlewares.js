@@ -40,7 +40,6 @@ export const verifyToken = async(req, res, next) => {
       return res.status(401).json({ message: 'Token Was expires.' });
     }
 
-    // Erreur serveur pour les autres cas
     res.status(500).json({ message: 'internal server error.' });
   
   }

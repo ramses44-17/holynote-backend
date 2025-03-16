@@ -7,7 +7,7 @@ const prisma = new PrismaClient()
 
 
 
-const youtubeUrlRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+const youtubeUrlRegex = /(?:youtube\.com\/(?:.*[?&]v=|(?:watch\?v=|embed\/|v\/|shorts\/|live\/))|youtu\.be\/)([a-zA-Z0-9_-]{11})/
 
 
 const noteIdSchema = z.object({
@@ -41,6 +41,7 @@ const noteSchema = z.object({
 })
 
 const extractYouTubeId = (url) => {
+  if(!url) return null
   const match = url.match(youtubeUrlRegex);
   return match ? match[1] : null;
 };
@@ -86,25 +87,30 @@ if(!oldNote){
     message:"note not found"
   })
 }
-let youtubeId = null
-let referencesArray = null
-if(youtubeUrl){
-  youtubeId = extractYouTubeId(youtubeUrl)
+let youtubeId = null;
+let referencesArray = null;
+
+if (youtubeUrl !== undefined) { // Permet de supprimer youtubeId si youtubeUrl est null
+  youtubeId = youtubeUrl ? extractYouTubeId(youtubeUrl) : null;
 }
-if(references){
-  referencesArray = separateReferences(references)
+
+if (references) {
+  referencesArray = separateReferences(references);
 }
-  const updatedNote = await prisma.note.update({
-    where:{id:noteId,userId:req.user?.id},
-    data:{content:content ? content : oldNote.content,
-    topic:topic ? topic : oldNote.topic,
-    date:date ? date:oldNote.date,
-    preacher:preacher ? preacher:oldNote.preacher,
-    color:color ? color :oldNote.color,
-    references:referencesArray ? referencesArray : oldNote.references,
-    youtubeId:youtubeId ? youtubeId : oldNote.youtubeId
-    }
-  })
+
+const updatedNote = await prisma.note.update({
+  where: { id: noteId, userId: req.user?.id },
+  data: {
+    content: content ? content : oldNote.content,
+    topic: topic ? topic : oldNote.topic,
+    date: date ? date : oldNote.date,
+    preacher: preacher ? preacher : oldNote.preacher,
+    color: color ? color : oldNote.color,
+    references: referencesArray ? referencesArray : oldNote.references,
+    youtubeId: youtubeId !== undefined ? youtubeId : oldNote.youtubeId, // Permet de le reset
+  },
+});
+
 
   res.status(200).json(updatedNote)
   } catch (error) {

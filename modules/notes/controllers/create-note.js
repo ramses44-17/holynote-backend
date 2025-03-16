@@ -3,7 +3,8 @@ import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 // Regex pour valider les URLs YouTube et extraire l'ID
-const youtubeUrlRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+const youtubeUrlRegex = /(?:youtube\.com\/(?:.*[?&]v=|(?:watch\?v=|embed\/|v\/|shorts\/|live\/))|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+  
 const noteSchema = z.object({
   topic: z.string({
     message:"topic is required"
@@ -48,18 +49,22 @@ const separateReferences = (references) => {
 
 const addNote = async(req,res) => {
 try {
+  let tempReferences
   const {topic,content,color, references, youtubeUrl,date,preacher} = req.body
-
-const result = noteSchema.safeParse({topic,content,color,references,youtubeUrl,date,preacher})
-      
+if(!references){
+  tempReferences = ""
+}
+tempReferences = references
+const result = noteSchema.safeParse({topic,content,color,tempReferences,youtubeUrl,date,preacher})
 if(!result.success){
   return res.status(422).json({
     message: result.error?.errors[0].message
   })
 }
 const youtubeId = extractYouTubeId(youtubeUrl)
-const referencesArray = separateReferences(references)
+const referencesArray = separateReferences(tempReferences)
 
+console.log(referencesArray);
 
 const createdNote = await prisma.note.create({
   data:{

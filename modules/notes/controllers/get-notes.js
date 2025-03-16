@@ -25,7 +25,8 @@ try {
 
 
 export const getNote =async (req,res) => {
-  const noteId = req.params.noteId
+  try {
+    const noteId = req.params.noteId
   const note = await prisma.note.findUnique({
     where:{
       id:noteId
@@ -43,4 +44,9 @@ export const getNote =async (req,res) => {
   res.status(200).json(
     note
   )
+  } catch (error) {
+    res.status(500).json({
+      message:"something went wrong !"
+    })
+  }
 }
