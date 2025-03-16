@@ -3,13 +3,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import userRouter from "./modules/users/users.routes.js"
 import notesRouter from "./modules/notes/notes.routes.js"
-import https from 'https';
-import fs from 'fs';
 
-const options = {
-  key: fs.readFileSync('./localhost-key.pem'),
-  cert: fs.readFileSync('./localhost.pem'),
-};
 const port = process.env.PORT || 3000
 const app = express()
 app.use(express.json())
@@ -20,7 +14,12 @@ app.use(cors({
 app.use(cookieParser())
 app.use("/api/users",userRouter)
 app.use("/api/notes",notesRouter)
+app.all('*',(req,res,next)=>{
+  res.status(404).json({
+    message:"not found"
+  })
+})
 
-https.createServer(options, app).listen(port, () => {
-  console.log(`Backend HTTPS en écoute sur https://localhost:${port}`);
+app.listen(port, () => {
+  console.log(`Backend HTTPS en écoute...`);
 });
