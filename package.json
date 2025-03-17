@@ -5,8 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "postinstall": "cd node_modules/bcrypt && node-pre-gyp install --fallback-to-build"
+    "start": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
