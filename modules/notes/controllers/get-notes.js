@@ -25,28 +25,29 @@ try {
 
 
 export const getNote =async (req,res) => {
-  try {
+  try{
     const noteId = req.params.noteId
-  const note = await prisma.note.findUnique({
-    where:{
-      id:noteId
+    const note = await prisma.note.findUnique({
+      where:{
+        id:noteId
+      }
+    })
+  
+    if(note){
+      if(note.userId ==! req.user.id){
+        return res.status(403).json({
+          message:"not authorized"
+        })
+      }
     }
-  })
-
-  if(note){
-    if(note.userId ==! req.user.id){
-      return res.status(403).json({
-        message:"not authorized"
-      })
-    }
-  }
-
-  res.status(200).json(
-    note
-  )
-  } catch (error) {
+  
+    res.status(200).json(
+      note
+    )
+  }catch(error){
+    console.log(error)
     res.status(500).json({
-      message:"something went wrong !"
+      message:"Something went wrong"
     })
   }
 }
