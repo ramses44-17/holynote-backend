@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000
 const app = express()
 app.use(express.json())
 app.use(cors({
-  origin: "https://localhost:5173",
+  origin: "https://holynote.vercel.app",
   credentials: true
 }))
 app.use(cookieParser())
