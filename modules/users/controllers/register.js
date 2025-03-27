@@ -1,6 +1,6 @@
 import z from "zod"
 import { PrismaClient } from "@prisma/client"
-import bcrypt from "bcrypt"
+import bcryptjs from "bcryptjs"
 
 const prisma = new PrismaClient()
 const schema = z.object({
@@ -43,8 +43,8 @@ const register =async (req,res) => {
         message: "User already exists"
       })
     }
-    const salt = await bcrypt.genSalt(12)
-    const hashedPassword = await bcrypt.hash(password, salt)
+    const salt = await bcryptjs.genSalt(12)
+    const hashedPassword = await bcryptjs.hash(password, salt)
 
     await prisma.user.create({
       data: {

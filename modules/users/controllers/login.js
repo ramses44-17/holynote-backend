@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import bcrypt from "bcrypt"
+import bcryptjs from "bcryptjs"
 import { PrismaClient } from "@prisma/client"
 const login = async(req, res) => {
   try {
@@ -20,7 +20,7 @@ const login = async(req, res) => {
       message: "Invalid email or password"
     })
   }
-  const isValid = await bcrypt.compare(password, user.password)
+  const isValid = await bcryptjs.compare(password, user.password)
   if(!isValid) {
     return res.status(401).json({
       message: "Invalid email or password"
