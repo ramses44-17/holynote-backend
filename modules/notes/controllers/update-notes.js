@@ -1,4 +1,4 @@
-import { PrismaClient} from "@prisma/client";
+import  {PrismaClient} from "@prisma/client";
 import {separateReferences} from "../../../lib/utils.js"
 import {noteIdSchema, updatedNoteSchema} from "../../../schemas/note.schemas.js";
 
