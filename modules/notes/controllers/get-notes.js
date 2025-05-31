@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 
 export const getNotes = async (req, res) => {
   try {
-    const { search = "", page = 1, limit = 10, filter = "all" } = req.query;
+    const { search = "", page = 1, limit = 10} = req.query;
 
     const take = parseInt(limit);
     const skip = (parseInt(page) - 1) * take;
