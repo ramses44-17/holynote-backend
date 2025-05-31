@@ -1,8 +1,5 @@
 import  {PrismaClient} from "@prisma/client";
-<<<<<<< HEAD
-=======
 // import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, subWeeks, subMonths } from "date-fns";
->>>>>>> main
 
 
 const prisma = new PrismaClient()
