@@ -1,7 +1,7 @@
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
-import userRouter from "./modules/users/users.routes.js"
+import authRouter from "./modules/auth/auth.routes.js"
 import notesRouter from "./modules/notes/notes.routes.js"
 import https from 'https';
 import fs from 'fs';
@@ -18,7 +18,7 @@ app.use(cors({
   credentials: true
 }))
 app.use(cookieParser())
-app.use("/api/users",userRouter)
+app.use("/api/auth",authRouter)
 app.use("/api/notes",notesRouter)
 
 https.createServer(options, app).listen(port, () => {
