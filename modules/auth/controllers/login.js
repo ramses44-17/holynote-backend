@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 import { addDays } from "date-fns";
-import { v4 as uuidv4 } from 'uuid'
+// import { v4 as uuidv4 } from 'uuid'
 
 const prisma = new PrismaClient();
 
@@ -30,7 +30,7 @@ const login = async (req, res) => {
 
     // Access Token (durée courte, ex: 15 min)
     const accessToken = jwt.sign(
-      { id: user.id, jti: uuidv4(), },
+      { id: user.id},
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES }
     );
@@ -41,6 +41,8 @@ const login = async (req, res) => {
       process.env.JWT_REFRESH_SECRET,
       { expiresIn: process.env.JWT_REFRESH_EXPIRES }
     );
+ 
+    
 
     // Optionnel : enregistrer le refresh token en DB
     await prisma.refreshToken.create({
@@ -51,19 +53,25 @@ const login = async (req, res) => {
       },
     });
 
+
+     res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      maxAge: 15 * 60 * 1000, 
+      // path:"/api/auth"
+    });
     // Envoyer le refresh token dans un cookie sécurisé
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       sameSite: "None",
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, 
-      path:"/api/auth"
+      // path:"/api/auth"
     });
 
     return res.status(200).json({
       message: "Login successful",
-      accessToken,
-      refreshToken,
       user: {
         id: user.id,
         username: user.username,

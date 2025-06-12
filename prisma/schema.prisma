@@ -49,9 +49,9 @@ model RefreshToken {
 }
 
 
-model RevokedAccessToken {
-  id        String   @id @default(uuid())
-  jti       String   @unique
-  userId    String
-  revokedAt DateTime
-}
+// model RevokedAccessToken {
+//   id        String   @id @default(uuid())
+//   jti       String   @unique
+//   userId    String
+//   revokedAt DateTime
+// }

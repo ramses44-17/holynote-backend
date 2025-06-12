@@ -5,25 +5,25 @@ const prisma = new PrismaClient()
 
 export const verifyToken = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization
+    
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ message: 'Unauthorized: No token provided' })
+    const token = req.cookies?.accessToken
+
+
+    if(!token) {
+       return res.status(401).json({ message: 'Unauthorized: token missing' })
     }
-
-    const token = authHeader.split(' ')[1]
-
 
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-      const revoked = await prisma.revokedAccessToken.findUnique({
-  where: { jti: decoded.jti }
-})
+//       const revoked = await prisma.revokedAccessToken.findUnique({
+//   where: { jti: decoded.jti }
+// })
 
-if (revoked) {
-  return res.status(401).json({ message: 'Unauthorized: Invalid token' })
-}
+// if (revoked) {
+//   return res.status(401).json({ message: 'Unauthorized: Invalid token' })
+// }
 
     if (!decoded?.id) {
       return res.status(401).json({ message: 'Unauthorized: Invalid token' })
@@ -40,6 +40,7 @@ if (revoked) {
     req.user = {
       id: user.id,
       username: user.username,
+      email:user.email
     }
 
     next()

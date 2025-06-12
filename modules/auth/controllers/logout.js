@@ -5,30 +5,30 @@ const prisma = new PrismaClient()
 
 export const logout = async (req, res) => {
   try {
-    const refreshToken = req.cookies?.refreshToken || req.body.refreshToken
+    const refreshToken = req.cookies?.refreshToken
     const logoutAll = req.body?.logoutAll === true
 
-    const accessToken = req.headers.authorization?.split(" ")[1] // ⬅️ Récupère l'access token
+    const accessToken = req.cookies?.accessToken// ⬅️ Récupère l'access token
 
     if (!refreshToken || !accessToken) {
       return res.status(200).json({ message: 'Already logged out' })
     }
 
     const decodedRefresh = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
-    const decodedAccess = jwt.verify(accessToken, process.env.JWT_SECRET)
+    // const decodedAccess = jwt.verify(accessToken, process.env.JWT_SECRET)
 
-    if (!decodedRefresh?.id || !decodedAccess?.jti) {
+    if (!decodedRefresh?.id) {
       return res.status(401).json({ message: 'Invalid token' })
     }
 
     // 🔒 Révoquer l'access token (à condition de l'avoir généré avec un `jti`)
-    await prisma.revokedAccessToken.create({
-      data: {
-        jti: decodedAccess.jti,
-        userId: decodedAccess.id,
-        revokedAt: new Date(),
-      }
-    })
+    // await prisma.revokedAccessToken.create({
+    //   data: {
+    //     jti: decodedAccess.jti,
+    //     userId: decodedAccess.id,
+    //     revokedAt: new Date(),
+    //   }
+    // })
 
     if (logoutAll) {
       await prisma.refreshToken.updateMany({
@@ -41,6 +41,12 @@ export const logout = async (req, res) => {
         data: { revoked: true }
       })
     }
+
+    res.clearCookie('accessToken', {
+      httpOnly: true,
+      sameSite: 'None',
+      secure: true,
+    })
 
     res.clearCookie('refreshToken', {
       httpOnly: true,
