@@ -31,14 +31,13 @@ export const  updatedNoteSchema = z.object({
   contentText: z.string().nullable().optional(),
   contentHTML: z.string().nullable().optional(),
   contentJSON: z.record(z.any()).nullable().optional(),
-  references: z.string().regex(
-    BiblicreferencesRegex,
-    {
-      message: "Invalid references format",
-    }
-  )
+  references: z.string().refine((val) => !val || BiblicreferencesRegex.test(val), {
+    message: "Invalid references format",
+  })
   .nullable().optional(),
-  youtubeUrl: z.string().url("Invalid youtube url").regex(youtubeUrlRegex, "Invalid youtube url").optional().nullable(),
+  youtubeUrl: z.string().optional().nullable().refine((val) => !val || youtubeUrlRegex.test(val), {
+    message: "Invalid youtube url",
+  }),
   preacher: z.string({
     message:"Preacher name is required"
   }).min(1, "Preacher is required").max(60, "Preacher must be no longer than 60 characteres").optional(),

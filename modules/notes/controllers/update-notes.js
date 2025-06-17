@@ -40,17 +40,36 @@ if(!oldNote){
   })
 }
 
+let finalContentJson
+let finalContentHtml
+let finalContentText
+console.log(youtubeUrl);
+
+let finalYoutubeUrl = youtubeUrl === null || youtubeUrl === undefined ? oldNote.youtubeUrl : youtubeUrl.trim() === "" ? null : youtubeUrl
+
+let finalBiblicalsReferences = references === null || undefined ? oldNote.biblicalReferences : separateReferences(references)
+if (content === null || undefined) { 
+  finalContentJson = oldNote.contentJSON
+  finalContentHtml = oldNote.contentHTML
+  finalContentText = oldNote.contentText
+}else {  
+  finalContentHtml = content.trim()=== "" ? null : contentHTML
+  finalContentJson = content.trim()=== "" ? null : contentJSON
+  finalContentText = content.trim() === "" ? null : content
+}
+
+
 
   const updatedNote = await prisma.note.update({
     where:{id:noteId,userId:req.user?.id},
     data:{
-      contentText:content ? content : oldNote.contentText,
-  contentJSON: contentJSON ? contentJSON : oldNote.contentJSON,
-  contentHTML:contentHTML ? contentHTML : oldNote.contentHTML,
+      contentText:finalContentText,
+  contentJSON: finalContentJson,
+  contentHTML:finalContentHtml,
   topic: topic ? topic : oldNote.topic,
   date: date ? date : oldNote.date,
-  biblicalReferences: references ? separateReferences(references):oldNote.biblicalReferences,
-  youtubeUrl:youtubeUrl ? youtubeUrl : oldNote.youtubeUrl,
+  biblicalReferences: finalBiblicalsReferences,
+  youtubeUrl:finalYoutubeUrl,
   preacher: preacher ? preacher : oldNote.preacher
     }
   })
