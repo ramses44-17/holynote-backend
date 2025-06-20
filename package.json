@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server.js",
-    "postinstall":"pnpm prisma generate"
+    "postinstall":"pnpm prisma generate && pnpm prisma migrate deploy"
   },
   "keywords": [],
   "author": "",
