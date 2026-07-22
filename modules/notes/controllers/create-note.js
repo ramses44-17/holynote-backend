@@ -11,9 +11,9 @@ const prisma = new PrismaClient()
 
 const addNote = async(req,res) => {
 try {
-  const {topic,content,contentHTML,contentJSON, references, youtubeUrl,date,preacher} = req.body
+  const {topic,content,contentHTML,contentJSON} = req.body
 
-const result = noteSchemas.safeParse({topic,contentText:content,contentHTML,contentJSON,biblicalReferences:references,youtubeUrl,date,preacher})
+const result = noteSchemas.safeParse({topic,contentText:content,contentHTML,contentJSON})
       
 if(!result.success){
   return res.status(422).json({
@@ -21,7 +21,7 @@ if(!result.success){
   })
 }
 
-const referencesArray = separateReferences(references)
+
 
 
 const createdNote = await prisma.note.create({
@@ -31,10 +31,6 @@ const createdNote = await prisma.note.create({
     contentText: content ?? null,
     contentHTML: contentHTML ?? null,
     contentJSON: contentJSON ?? null,
-    biblicalReferences: referencesArray,
-    youtubeUrl: youtubeUrl ?? null,
-    date: date,
-    preacher: preacher
   }
 })
   res.status(201).json(createdNote)

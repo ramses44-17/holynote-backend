@@ -16,8 +16,6 @@ export const getNotes = async (req, res) => {
       OR: [
         { topic: { contains: search, mode: "insensitive" } },
             { contentText: { contains: search, mode: "insensitive" } },
-            { preacher: { contains: search, mode: "insensitive" } },
-            { youtubeUrl: { contains: search, mode: "insensitive" } },
       ],
     };
 
