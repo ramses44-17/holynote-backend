@@ -6,6 +6,7 @@ import notesRouter from "./modules/notes/notes.routes.js"
 import https from 'https';
 import fs from 'fs';
 import morgan from "morgan"
+import bibleRouter from "./modules/bible/bible.route.js"
 
 const options = {
   key: fs.readFileSync('./localhost-key.pem'),
@@ -22,6 +23,7 @@ app.use(cookieParser())
 app.use(morgan('dev'))
 app.use("/api/auth",authRouter)
 app.use("/api/notes",notesRouter)
+app.use("/api/bible",bibleRouter)
 
 
 https.createServer(options, app).listen(port, () => {

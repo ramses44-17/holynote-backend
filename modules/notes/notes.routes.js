@@ -12,4 +12,6 @@ notesRouter.get("/",verifyToken,getNotes)
 notesRouter.get("/:noteId",verifyToken,verifyToken,getNote)
 notesRouter.patch('/:noteId',verifyToken,updateNote)
 notesRouter.delete("/:noteId",verifyToken,deleteNote)
+
+
 export default notesRouter
