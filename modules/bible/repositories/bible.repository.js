@@ -11,76 +11,21 @@ class BibleRepository {
         FROM books
         ORDER BY book_number
       `),
-
-      // getBookById: db.prepare(`
-      //   SELECT
-      //     book_number AS id,
-      //     short_name AS shortName,
-      //     long_name AS longName
-      //   FROM books
-      //   WHERE book_number = ?
-      // `),
-
-      // findBookByName: db.prepare(`
-      //   SELECT
-      //     book_number AS id,
-      //     short_name AS shortName,
-      //     long_name AS longName
-      //   FROM books
-      //   WHERE
-      //     LOWER(short_name) = LOWER(?)
-      //     OR LOWER(long_name) = LOWER(?)
-      // `),
-
-      // getVerses: db.prepare(`
-      //   SELECT
-      //     verse,
-      //     text
-      //   FROM verses
-      //   WHERE
-      //     book_number = ?
-      //     AND chapter = ?
-      //   ORDER BY verse
-      // `),
-
-      // getVerse: db.prepare(`
-      //   SELECT
-      //     verse,
-      //     text
-      //   FROM verses
-      //   WHERE
-      //     book_number = ?
-      //     AND chapter = ?
-      //     AND verse = ?
-      // `),
-
-      // getVerseRange: db.prepare(`
-      //   SELECT
-      //     verse,
-      //     text
-      //   FROM verses
-      //   WHERE
-      //     book_number = ?
-      //     AND chapter = ?
-      //     AND verse BETWEEN ? AND ?
-      //   ORDER BY verse
-      // `),
-
-      // getStories: db.prepare(`
-      //   SELECT
-      //     verse,
-      //     title
-      //   FROM stories
-      //   WHERE
-      //     book_number = ?
-      //     AND chapter = ?
-      //   ORDER BY verse
-      // `)
+      getChapterCount: db.prepare(`
+        SELECT MAX(chapter) AS chapterCount
+        FROM verses
+        WHERE book_number = ?
+      `)
     };
   }
 
   getBooks() {
     return this.queries.getBooks.all();
+  }
+
+  getChapterCount(bookId) {
+    const row = this.queries.getChapterCount.get(bookId);
+    return row?.chapterCount ?? 0;
   }
 
   // getBookById(bookId) {
