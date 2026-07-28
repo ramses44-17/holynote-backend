@@ -16,6 +16,18 @@ class BibleService {
 
     return chapterCount;
   }
+
+    getVerses(bookId, chapter) {
+    const verses = bibleRepository.getVerses(bookId, chapter);
+
+    if (!verses || verses.length === 0) {
+      const error = new Error("Chapitre introuvable");
+      error.status = 404;
+      throw error;
+    }
+
+    return verses;
+  }
 }
 
 export default new BibleService();

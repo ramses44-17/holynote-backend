@@ -15,6 +15,16 @@ class BibleRepository {
         SELECT MAX(chapter) AS chapterCount
         FROM verses
         WHERE book_number = ?
+      `),
+      getVerses: db.prepare(`
+        SELECT
+          verse,
+          text
+        FROM verses
+        WHERE
+          book_number = ?
+          AND chapter = ?
+        ORDER BY verse
       `)
     };
   }
@@ -28,6 +38,10 @@ class BibleRepository {
     return row?.chapterCount ?? 0;
   }
 
+  
+  getVerses(bookId, chapter) {
+    return this.queries.getVerses.all(bookId, chapter);
+  }
   // getBookById(bookId) {
   //   return this.queries.getBookById.get(bookId);
   // }
